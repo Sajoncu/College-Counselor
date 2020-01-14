@@ -2,17 +2,25 @@ package com.example.collegecounselor
 
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import com.example.collegecounselor.databinding.FragmentGamePlayBinding
 import kotlinx.android.synthetic.main.fragment_game_play.*
+import java.lang.Exception
+import java.util.*
+import androidx.databinding.adapters.TextViewBindingAdapter.setText
+
+
 
 /**
  * A simple [Fragment] subclass.
@@ -84,6 +92,12 @@ class GamePlayFragment : Fragment() {
     var questionIndex = 0
     var score = 0
 
+    private val COUNTDOWN_IN_MILLIS:Long = 10000
+
+    lateinit var countDownTimer: CountDownTimer
+    var timeLeftInMillis:Long = 0
+
+
 
     private fun setQuestion(){
         binding.textView2.text = "Score: "+score
@@ -91,7 +105,51 @@ class GamePlayFragment : Fragment() {
         currentQuestion = questions[questionIndex]
         answers = currentQuestion.answers.toMutableList()
         answers.shuffle()
+
+        //startProgress()
+//        timeLeftInMillis = COUNTDOWN_IN_MILLIS
+//        startCountDown()
     }
+
+//    private fun startCountDown(){
+//        countDownTimer = object : CountDownTimer(timeLeftInMillis, 1000) {
+//
+//            override fun onTick(millisUntilFinished: Long) {
+//                timeLeftInMillis = millisUntilFinished
+//                updateCountDownText()
+//            }
+//
+//            override fun onFinish() {
+//                timeLeftInMillis = 0
+//                updateCountDownText()
+//            }
+//        }
+//        countDownTimer.start()
+//
+//    }
+//    private fun updateCountDownText(){
+//        var minutes:Int = ((timeLeftInMillis/1000)/60).toInt()
+//        var seconds = ((timeLeftInMillis/1000)%60).toInt()
+//
+//        textView5.text = minutes.toString()+":"+seconds.toString()
+//    }
+//    private fun startProgress(){
+//        var count:Int = 0
+//        val timer = Timer()
+//
+//        timer.schedule(object:TimerTask(){
+//            override fun run() {
+//                count++
+//                progressBar.progress = count
+//
+//                if (count > 100){
+//                    //change question
+//                    progressBar.progress = 0
+//                    setQuestion()
+//                }
+//            }
+//        },0, 100)
+//    }
 
     private fun randomizeQuestion(){
         questions.shuffle()
@@ -135,12 +193,14 @@ class GamePlayFragment : Fragment() {
 
 
     private fun checkAnswer(answer:String){
+
         if(answer.equals(currentQuestion.answers[0])){
             score++
         }
         else{
             //wrongAnswerList.add(currentQuestion.theQuestion)
         }
+
         questionIndex++
         if(questionIndex<=maxNumberOfQuestion-1){
             setQuestion()
