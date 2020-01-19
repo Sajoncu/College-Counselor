@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/app_navigation"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.collegecounselor.LoginFragment"
+        android:label="LoginFragment" >
+        <action
+            android:id="@+id/action_loginFragment_to_lavelFragment"
+            app:destination="@id/lavelFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/lavelFragment"
+        android:name="com.example.collegecounselor.LavelFragment"
+        android:label="LavelFragment" >
+        <action
+            android:id="@+id/action_lavelFragment_to_gamePlayFragment"
+            app:destination="@id/gamePlayFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gamePlayFragment"
+        android:name="com.example.collegecounselor.GamePlayFragment"
+        android:label="GamePlayFragment" >
+        <argument
+            android:name="level"
+            app:argType="string" />
+    </fragment>
+</navigation>
