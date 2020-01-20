@@ -26,5 +26,8 @@
         <argument
             android:name="level"
             app:argType="string" />
+        <action
+            android:id="@+id/action_gamePlayFragment_to_lavelFragment"
+            app:destination="@id/lavelFragment" />
     </fragment>
 </navigation>

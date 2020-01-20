@@ -1,7 +1,9 @@
 package com.example.collegecounselor
 
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import androidx.fragment.app.Fragment
@@ -13,12 +15,19 @@ import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
 import com.example.collegecounselor.databinding.FragmentLavelBinding
 import kotlinx.android.synthetic.main.fragment_lavel.*
+import kotlinx.android.synthetic.main.lockeddialog.view.*
 
 /**
  * A simple [Fragment] subclass.
  */
 class LavelFragment : Fragment() {
     lateinit var binding: FragmentLavelBinding
+    lateinit var sharedPreference: SharedPreferences
+    lateinit var L_1_HS:String
+    lateinit var L_2_HS:String
+    lateinit var L_3_HS:String
+    lateinit var L_4_HS:String
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,6 +35,18 @@ class LavelFragment : Fragment() {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_lavel, container, false)
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_lavel, container, false)
+
+        sharedPreference = activity!!.getSharedPreferences("sp", Context.MODE_PRIVATE)
+        L_1_HS = sharedPreference.getInt("L_1_HS", 0).toString()
+        L_1_HS = "Height Score: "+L_1_HS
+        L_2_HS = sharedPreference.getInt("L_2_HS", 0).toString()
+        L_2_HS = "Height Score: "+L_2_HS
+        L_3_HS = sharedPreference.getInt("L_3_HS", 0).toString()
+        L_3_HS = "Height Score: "+L_3_HS
+        L_4_HS = sharedPreference.getInt("L_4_HS", 0).toString()
+        L_4_HS = "Heig ht Score: "+L_4_HS
+
+        binding.level = this
         return binding.root
     }
 
@@ -49,7 +70,8 @@ class LavelFragment : Fragment() {
 
         binding.level2.setOnClickListener{
             if(sharedPreference.getBoolean("LEVEL_2", false) != true){
-                Toast.makeText(activity, "Level is locked :(", Toast.LENGTH_LONG).show()
+//                Toast.makeText(activity, "Level is locked :(", Toast.LENGTH_LONG).show()
+                createDialogForLevelLocked()
             } else {
                 goGameFragment("2")
             }
@@ -57,7 +79,8 @@ class LavelFragment : Fragment() {
 
         binding.level3.setOnClickListener{
             if(sharedPreference.getBoolean("LEVEL_3", false) != true){
-                Toast.makeText(activity, "Level is locked :(", Toast.LENGTH_LONG).show()
+//                Toast.makeText(activity, "Level is locked :(", Toast.LENGTH_LONG).show()
+                createDialogForLevelLocked()
             } else {
                 goGameFragment("3")
             }
@@ -65,15 +88,24 @@ class LavelFragment : Fragment() {
 
         binding.level4.setOnClickListener{
             if(sharedPreference.getBoolean("LEVEL_4", false) != true){
-                Toast.makeText(activity, "Level is locked :(", Toast.LENGTH_LONG).show()
+//                Toast.makeText(activity, "Level is locked :(", Toast.LENGTH_LONG).show()
+                createDialogForLevelLocked()
             } else {
                 goGameFragment("4")
             }
         }
 
     }
+
+    private fun createDialogForLevelLocked(){
+        val mDialogView = LayoutInflater.from(activity).inflate(R.layout.lockeddialog, null)
+        val mBuilder = AlertDialog.Builder(activity)
+            .setView(mDialogView)
+        val mAlertDialog = mBuilder.show()
+
+        mDialogView.btnOk.setOnClickListener{
+            mAlertDialog.dismiss()
+        }
+    }
 }
 
-//private fun SharedPreferences.getBoolean(s: String): Boolean {
-//
-//}

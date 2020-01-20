@@ -26,7 +26,7 @@ class LoginFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_login, container, false)
-        val sharedPreference = this.activity!!.getSharedPreferences("sp", Context.MODE_PRIVATE)
+        val sharedPreference = activity!!.getSharedPreferences("sp", Context.MODE_PRIVATE)
 //        var editor = sharedPreference?.edit()
 //        editor?.putBoolean("LEVEL_1", true)
 //        editor?.putBoolean("LEVEL_2", false)

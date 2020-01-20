@@ -2,8 +2,10 @@ package com.example.collegecounselor
 
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.preference.PreferenceManager
@@ -21,7 +23,8 @@ import kotlinx.android.synthetic.main.fragment_game_play.*
 import java.lang.Exception
 import java.util.*
 import androidx.databinding.adapters.TextViewBindingAdapter.setText
-
+import androidx.navigation.Navigation
+import kotlinx.android.synthetic.main.lockeddialog.view.*
 
 
 /**
@@ -31,30 +34,25 @@ class GamePlayFragment : Fragment() {
 
     data class Question(
         val text: String,
-        val answers: List<String>,
-        val level: String
+        val answers: List<String>
     )
 
     private val questions: MutableList<Question> = mutableListOf(
         Question(
             text = "What is Android Jetpack?",
-            answers = listOf("all of these", "tools", "documentation", "libraries"),
-            level="1"
+            answers = listOf("all of these", "tools", "documentation", "libraries")
         ),
         Question(
             text = "Base class for Layout?",
-            answers = listOf("ViewGroup", "ViewSet", "ViewCollection", "ViewRoot"),
-            level="1"
+            answers = listOf("ViewGroup", "ViewSet", "ViewCollection", "ViewRoot")
         ),
         Question(
             text = "Layout for complex Screens?",
-            answers = listOf("ConstraintLayout", "GridLayout", "LinearLayout", "FrameLayout"),
-            level="1"
+            answers = listOf("ConstraintLayout", "GridLayout", "LinearLayout", "FrameLayout")
         ),
         Question(
             text = "Pushing structured data into a Layout?",
-            answers = listOf("Data Binding", "Data Pushing", "Set Text", "OnClick"),
-            level="1"
+            answers = listOf("Data Binding", "Data Pushing", "Set Text", "OnClick")
         ),
         Question(
             text = "Inflate layout in fragments?",
@@ -63,13 +61,11 @@ class GamePlayFragment : Fragment() {
                 "onActivityCreated",
                 "onCreateLayout",
                 "onInflateLayout"
-            ),
-            level="1"
+            )
         ),
         Question(
             text = "Build system for Android?",
-            answers = listOf("Gradle", "Graddle", "Grodle", "Groyle"),
-            level="1"
+            answers = listOf("Gradle", "Graddle", "Grodle", "Groyle")
         ),
         Question(
             text = "Android vector format?",
@@ -77,45 +73,37 @@ class GamePlayFragment : Fragment() {
                 "VectorDrawable",
                 "AndroidVectorDrawable",
                 "DrawableVector",
-                "AndroidVector"),
-            level="1"
+                "AndroidVector")
         ),
         Question(
             text = "Android Navigation Component?",
-            answers = listOf("NavController", "NavCentral", "NavMaster", "NavSwitcher"),
-            level="1"
+            answers = listOf("NavController", "NavCentral", "NavMaster", "NavSwitcher")
         ),
         Question(
             text = "Registers app with launcher?",
-            answers = listOf("intent-filter", "app-registry", "launcher-registry", "app-launcher"),
-            level="1"
+            answers = listOf("intent-filter", "app-registry", "launcher-registry", "app-launcher")
         ),
         Question(
             text = "Mark a layout for Data Binding?",
-            answers = listOf("<layout>", "<binding>", "<data-binding>", "<dbinding>"),
-            level="1"
+            answers = listOf("<layout>", "<binding>", "<data-binding>", "<dbinding>")
         )
     )
     private val medium: MutableList<Question> = mutableListOf(
         Question(
             text = "What is Android Jetpack? M",
-            answers = listOf("all of these", "tools", "documentation", "libraries"),
-            level="2"
+            answers = listOf("all of these", "tools", "documentation", "libraries")
         ),
         Question(
             text = "Base class for Layout? M",
-            answers = listOf("ViewGroup", "ViewSet", "ViewCollection", "ViewRoot"),
-            level="2"
+            answers = listOf("ViewGroup", "ViewSet", "ViewCollection", "ViewRoot")
         ),
         Question(
             text = "Layout for complex Screens? M",
-            answers = listOf("ConstraintLayout", "GridLayout", "LinearLayout", "FrameLayout"),
-            level="2"
+            answers = listOf("ConstraintLayout", "GridLayout", "LinearLayout", "FrameLayout")
         ),
         Question(
             text = "Pushing structured data into a Layout? M",
-            answers = listOf("Data Binding", "Data Pushing", "Set Text", "OnClick"),
-            level="2"
+            answers = listOf("Data Binding", "Data Pushing", "Set Text", "OnClick")
         ),
         Question(
             text = "Inflate layout in fragments? M",
@@ -124,13 +112,11 @@ class GamePlayFragment : Fragment() {
                 "onActivityCreated",
                 "onCreateLayout",
                 "onInflateLayout"
-            ),
-            level="1"
+            )
         ),
         Question(
             text = "Build system for Android? M",
-            answers = listOf("Gradle", "Graddle", "Grodle", "Groyle"),
-            level="1"
+            answers = listOf("Gradle", "Graddle", "Grodle", "Groyle")
         ),
         Question(
             text = "Android vector format?",
@@ -138,45 +124,37 @@ class GamePlayFragment : Fragment() {
                 "VectorDrawable",
                 "AndroidVectorDrawable",
                 "DrawableVector",
-                "AndroidVector"),
-            level="1"
+                "AndroidVector")
         ),
         Question(
             text = "Android Navigation Component? M",
-            answers = listOf("NavController", "NavCentral", "NavMaster", "NavSwitcher"),
-            level="1"
+            answers = listOf("NavController", "NavCentral", "NavMaster", "NavSwitcher")
         ),
         Question(
             text = "Registers app with launcher? M",
-            answers = listOf("intent-filter", "app-registry", "launcher-registry", "app-launcher"),
-            level="1"
+            answers = listOf("intent-filter", "app-registry", "launcher-registry", "app-launcher")
         ),
         Question(
             text = "Mark a layout for Data Binding? M",
-            answers = listOf("<layout>", "<binding>", "<data-binding>", "<dbinding>"),
-            level="1"
+            answers = listOf("<layout>", "<binding>", "<data-binding>", "<dbinding>")
         )
     )
     private val hard: MutableList<Question> = mutableListOf(
         Question(
             text = "What is Android Jetpack? hard",
-            answers = listOf("all of these", "tools", "documentation", "libraries"),
-            level="1"
+            answers = listOf("all of these", "tools", "documentation", "libraries")
         ),
         Question(
             text = "Base class for Layout? hard",
-            answers = listOf("ViewGroup", "ViewSet", "ViewCollection", "ViewRoot"),
-            level="1"
+            answers = listOf("ViewGroup", "ViewSet", "ViewCollection", "ViewRoot")
         ),
         Question(
             text = "Layout for complex Screens? hard",
-            answers = listOf("ConstraintLayout", "GridLayout", "LinearLayout", "FrameLayout"),
-            level="1"
+            answers = listOf("ConstraintLayout", "GridLayout", "LinearLayout", "FrameLayout")
         ),
         Question(
             text = "Pushing structured data into a Layout? hard",
-            answers = listOf("Data Binding", "Data Pushing", "Set Text", "OnClick"),
-            level="1"
+            answers = listOf("Data Binding", "Data Pushing", "Set Text", "OnClick")
         ),
         Question(
             text = "Inflate layout in fragments? hard",
@@ -185,13 +163,11 @@ class GamePlayFragment : Fragment() {
                 "onActivityCreated",
                 "onCreateLayout",
                 "onInflateLayout"
-            ),
-            level="1"
+            )
         ),
         Question(
             text = "Build system for Android? hard",
-            answers = listOf("Gradle", "Graddle", "Grodle", "Groyle"),
-            level="1"
+            answers = listOf("Gradle", "Graddle", "Grodle", "Groyle")
         ),
         Question(
             text = "Android vector format? hard",
@@ -199,45 +175,37 @@ class GamePlayFragment : Fragment() {
                 "VectorDrawable",
                 "AndroidVectorDrawable",
                 "DrawableVector",
-                "AndroidVector"),
-            level="1"
+                "AndroidVector")
         ),
         Question(
             text = "Android Navigation Component? hard",
-            answers = listOf("NavController", "NavCentral", "NavMaster", "NavSwitcher"),
-            level="1"
+            answers = listOf("NavController", "NavCentral", "NavMaster", "NavSwitcher")
         ),
         Question(
             text = "Registers app with launcher? hard",
-            answers = listOf("intent-filter", "app-registry", "launcher-registry", "app-launcher"),
-            level="1"
+            answers = listOf("intent-filter", "app-registry", "launcher-registry", "app-launcher")
         ),
         Question(
             text = "Mark a layout for Data Binding? hard",
-            answers = listOf("<layout>", "<binding>", "<data-binding>", "<dbinding>"),
-            level="1"
+            answers = listOf("<layout>", "<binding>", "<data-binding>", "<dbinding>")
         )
     )
     private val extrahard: MutableList<Question> = mutableListOf(
         Question(
             text = "What is Android Jetpack? hard",
-            answers = listOf("all of these", "tools", "documentation", "libraries"),
-            level="1"
+            answers = listOf("all of these", "tools", "documentation", "libraries")
         ),
         Question(
             text = "Base class for Layout? hard",
-            answers = listOf("ViewGroup", "ViewSet", "ViewCollection", "ViewRoot"),
-            level="1"
+            answers = listOf("ViewGroup", "ViewSet", "ViewCollection", "ViewRoot")
         ),
         Question(
             text = "Layout for complex Screens? hard",
-            answers = listOf("ConstraintLayout", "GridLayout", "LinearLayout", "FrameLayout"),
-            level="1"
+            answers = listOf("ConstraintLayout", "GridLayout", "LinearLayout", "FrameLayout")
         ),
         Question(
             text = "Pushing structured data into a Layout? hard",
-            answers = listOf("Data Binding", "Data Pushing", "Set Text", "OnClick"),
-            level="1"
+            answers = listOf("Data Binding", "Data Pushing", "Set Text", "OnClick")
         ),
         Question(
             text = "Inflate layout in fragments? hard",
@@ -246,13 +214,11 @@ class GamePlayFragment : Fragment() {
                 "onActivityCreated",
                 "onCreateLayout",
                 "onInflateLayout"
-            ),
-            level="1"
+            )
         ),
         Question(
             text = "Build system for Android? hard",
-            answers = listOf("Gradle", "Graddle", "Grodle", "Groyle"),
-            level="1"
+            answers = listOf("Gradle", "Graddle", "Grodle", "Groyle")
         ),
         Question(
             text = "Android vector format? hard",
@@ -260,32 +226,29 @@ class GamePlayFragment : Fragment() {
                 "VectorDrawable",
                 "AndroidVectorDrawable",
                 "DrawableVector",
-                "AndroidVector"),
-            level="1"
+                "AndroidVector")
         ),
         Question(
             text = "Android Navigation Component? hard",
-            answers = listOf("NavController", "NavCentral", "NavMaster", "NavSwitcher"),
-            level="1"
+            answers = listOf("NavController", "NavCentral", "NavMaster", "NavSwitcher")
         ),
         Question(
             text = "Registers app with launcher? hard",
-            answers = listOf("intent-filter", "app-registry", "launcher-registry", "app-launcher"),
-            level="1"
+            answers = listOf("intent-filter", "app-registry", "launcher-registry", "app-launcher")
         ),
         Question(
             text = "Mark a layout for Data Binding? hard",
-            answers = listOf("<layout>", "<binding>", "<data-binding>", "<dbinding>"),
-            level="1"
+            answers = listOf("<layout>", "<binding>", "<data-binding>", "<dbinding>")
         )
     )
 
     lateinit var binding: FragmentGamePlayBinding
     lateinit var currentQuestion: Question
-    lateinit var answers: MutableList<String>
+    lateinit var answerss: MutableList<String>
     lateinit var levelWizeQuestion: MutableList<Question>
+    lateinit var sharedPreference: SharedPreferences
     var level = ""
-    var maxNumberOfQuestion: Int = 5
+    var maxNumberOfQuestion: Int = 10
     var questionIndex = 0
     var score = 0
 
@@ -297,11 +260,18 @@ class GamePlayFragment : Fragment() {
 
 
     private fun setQuestion(){
-        binding.textView2.text = "Score: "+score
+
+        binding.option1.setBackgroundResource(R.drawable.buttonbg)
+        binding.option2.setBackgroundResource(R.drawable.buttonbg)
+        binding.option3.setBackgroundResource(R.drawable.buttonbg)
+        binding.option4.setBackgroundResource(R.drawable.buttonbg)
+
+
         binding.textView.text = "${questionIndex+1}"+"/"+maxNumberOfQuestion+"\n"+"Questions"
         currentQuestion = levelWizeQuestion[questionIndex]
-        answers = currentQuestion.answers.toMutableList()
-        answers.shuffle()
+        answerss = currentQuestion.answers.toMutableList()
+        answerss.shuffle()
+
 
         //startProgress()
 //        timeLeftInMillis = COUNTDOWN_IN_MILLIS
@@ -362,15 +332,43 @@ class GamePlayFragment : Fragment() {
         // Inflate the layout for this fragment
         //return inflater.inflate(R.layout.fragment_game_play, container, false)
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_game_play, container, false)
+
+        //TODO: these lines of code for catching the current level
         val args = GamePlayFragmentArgs.fromBundle(arguments!!)
         level = args.level
         binding.button5.text = "Level "+level
+
+        //TODO: this will initialize the score value according to level
+        //initializeScore()
+
+
+        //TODO: this will initialize question according to level
         selectQuestionAccordingToLevel()
+
+        //TODO: this method is for shuffle question
         randomizeQuestion()
 
+        //TODO: statement for passing reference to the layout using data binding
         binding.game = this
+
         return binding.root
     }
+
+//    private fun initializeScore(){
+//        sharedPreference = activity!!.getSharedPreferences("sp", Context.MODE_PRIVATE)
+//        if(level == "1"){
+//            score = sharedPreference.getInt("L_1_HS",0)
+//        }
+//        if (level == "2"){
+//            score = sharedPreference.getInt("L_2_HS",0)
+//        }
+//        if(level == "3"){
+//            score = sharedPreference.getInt("L_3_HS",0)
+//        }
+//        if(level == "4"){
+//            score = sharedPreference.getInt("L_4_HS",0)
+//        }
+//    }
 
     private fun selectQuestionAccordingToLevel(){
         if(level == "1"){
@@ -405,18 +403,54 @@ class GamePlayFragment : Fragment() {
         option4.setOnClickListener{
             checkAnswer(option4.text.toString())
         }
+
+        //TODO: this listener method is used for skiping the current question and go next question
+        skip.setOnClickListener{
+            if(questionIndex>=maxNumberOfQuestion-1){
+                getScore()
+            }else{
+                questionIndex++
+                setQuestion()
+                binding.invalidateAll()
+            }
+        }
+
+        //TODO: this listener is for giving a hint to the user
+        hint.setOnClickListener{
+            this.score -= 30
+            binding.textView2.text = "Score: "+score
+            updateAnswerInterface()
+        }
+
+        sharedPreference = activity!!.getSharedPreferences("sp", Context.MODE_PRIVATE)
     }
 
-
-    private fun checkAnswer(answer:String){
-
-        if(answer.equals(currentQuestion.answers[0])){
-            score++
-        }
-        else{
-            //wrongAnswerList.add(currentQuestion.theQuestion)
+    private fun updateAnswerInterface(){
+        if(currentQuestion.answers[2] == option1.text || currentQuestion.answers[3] == option1.text){
+            option1.setBackgroundResource(R.drawable.bggooglesignin)
         }
 
+        if(currentQuestion.answers[2] == option2.text || currentQuestion.answers[3] == option2.text){
+            option2.setBackgroundResource(R.drawable.bggooglesignin)
+        }
+
+        if(currentQuestion.answers[2] == option3.text || currentQuestion.answers[3] == option3.text){
+            option3.setBackgroundResource(R.drawable.bggooglesignin)
+        }
+
+        if(currentQuestion.answers[2] == option4.text || currentQuestion.answers[3] == option4.text){
+            option4.setBackgroundResource(R.drawable.bggooglesignin)
+        }
+    }
+
+    private fun checkAnswer(answer:String) {
+        if (questionIndex <= maxNumberOfQuestion - 1){
+            if (answer.equals(currentQuestion.answers[0])) {
+                score += 75
+            } else {
+                //wrongAnswerList.add(currentQuestion.theQuestion)
+            }
+        }
         questionIndex++
         if(questionIndex<=maxNumberOfQuestion-1){
             setQuestion()
@@ -425,35 +459,79 @@ class GamePlayFragment : Fragment() {
         else{
             getScore()
         }
+
+        binding.textView2.text = "Score: "+score
     }
 
 
 
-    private fun getScore() = if(score>=3){
-        val sharedPreference = this.activity!!.getSharedPreferences("sp", Context.MODE_PRIVATE)
+    private fun getScore(){
+        var heightScore = sharedPreference.getInt("HEIGHTSCORE", 0)
         var editor = sharedPreference.edit()
-        var l: String? = sharedPreference.getString("CURRENT_LEVEL","1")
+        if(score>heightScore){
 
-        if(l == "1"){
-            editor.putString("CURRENT_LEVEL", "2")
-            editor.putBoolean("LEVEL_2", true)
-            editor.commit()
-        } else if(l == "2"){
-            editor.putString("CURRENT_LEVEL", "3")
-            editor.putBoolean("LEVEL_3", true)
-            editor.commit()
-        } else if(l == "3"){
-            editor.putString("CURRENT_LEVEL", "4")
-            editor.putBoolean("LEVEL_4", true)
-            editor.commit()
+            editor.putInt("HEIGHTSCORE", score)
         }
-        //val action = QuizFragmentDirections.actionQuizFragment3ToQuizWonFragment(score,wrongAnswerList.toTypedArray())
-        //view!!.findNavController().navigate(action)
-        Toast.makeText(context, "You answered "+score+" out of "+maxNumberOfQuestion+"questions", Toast.LENGTH_SHORT).show()
+
+        if(level == "1"){
+            if(score>=0 && score>=750){
+                editor.putInt("CURRENT_LEVEL", 2)
+                editor.putInt("L_1_HS",score)
+                editor.putBoolean("LEVEL_2", true)
+                editor.putBoolean("LEVEL_3", false)
+                editor.putBoolean("LEVEL_4", false)
+                editor.commit()
+                createDialogForLevelLocked()
+            }
+        }
+        if(level == "2") {
+            if (score >= 0 && score >= 750) {
+                editor.putInt("CURRENT_LEVEL", 3)
+                editor.putInt("L_2_HS", score)
+                editor.putBoolean("LEVEL_1", true)
+                editor.putBoolean("LEVEL_2", true)
+                editor.putBoolean("LEVEL_3", true)
+                editor.putBoolean("LEVEL_4", false)
+                editor.commit()
+                createDialogForLevelLocked()
+            }
+        }
+
+        if(level == "3") {
+            if (score >= 0 && score >= 750) {
+                editor.putInt("CURRENT_LEVEL", 4)
+                editor.putInt("L_3_HS", score)
+                editor.putBoolean("LEVEL_1", true)
+                editor.putBoolean("LEVEL_2", true)
+                editor.putBoolean("LEVEL_3", true)
+                editor.putBoolean("LEVEL_4", true)
+                editor.commit()
+                createDialogForLevelLocked()
+            }
+        }
+
+        if(level == "4"){
+
+            Toast.makeText(activity, "You unlock all the level", Toast.LENGTH_SHORT).show()
+
+            if (score >= 0 && score >= 750) {
+                editor.putInt("L_4_HS",score)
+                editor.commit()
+            }
+        }
     }
-    else{
-        //val action = QuizFragmentDirections.actionQuizFragment3ToQuizLostFragment(score,wrongAnswerList.toTypedArray())
-        //view!!.findNavController().navigate(action)
-        Toast.makeText(context, "You answered "+score+" out of "+maxNumberOfQuestion+"questions", Toast.LENGTH_SHORT).show()
+
+    private fun createDialogForLevelLocked(){
+        val mDialogView = LayoutInflater.from(activity).inflate(R.layout.congratulation, null)
+        val mBuilder = AlertDialog.Builder(activity)
+            .setView(mDialogView)
+        val mAlertDialog = mBuilder.show()
+
+        mDialogView.btnOk.setOnClickListener{
+            mAlertDialog.dismiss()
+            //val action = QuizFragmentDirections.actionQuizFragment3ToQuizWonFragment(score,wrongAnswerList.toTypedArray())
+            //view!!.findNavController().navigate(action)
+            Navigation.findNavController(view!!).navigate(R.id.action_gamePlayFragment_to_lavelFragment)
+        }
     }
 }
